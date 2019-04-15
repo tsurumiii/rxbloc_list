@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rxbloc_list/bloc/menu.dart';
 import './bloc/bloc_provider.dart';
 import './bloc/menu_bloc.dart';
 
@@ -120,14 +121,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _menuBloc(BuildContext context) {
     final blocProvider = BlocProvider.of(context);
-    return StreamBuilder(
-      stream: blocProvider.getMenuName,
-      initialData: 'menu name',
-      builder: (context, snapshot) {
-        return Container(
-          child: Text(snapshot.data),
-        );
-      },
+    return Column(
+      children: <Widget>[
+        StreamBuilder(
+          stream: blocProvider.getMenuName,
+          initialData: 'menu name',
+          builder: (context, snapshot) {
+            return Container(
+              child: Text(snapshot.data),
+            );
+          },
+        ),
+        StreamBuilder(
+          stream: blocProvider.getMenuList,
+          initialData: '',
+          builder: (context, snapshot) {
+            return Container(
+              child: Text(snapshot.data.toString()),
+            );
+          },
+        ),
+      ],
     );
   }
 }
