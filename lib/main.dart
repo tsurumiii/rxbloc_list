@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './bloc/bloc_provider.dart';
+import './bloc/menu_bloc.dart';
 
 void main() => runApp(MyApp());
 
@@ -6,11 +8,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider(
+      child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
@@ -27,7 +31,12 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('rx Bloc List'),
       ),
-      body: _menuList(context),
+      body: ListView(
+        children: <Widget>[
+          _menuList(context),
+          _menuBloc(context),
+        ],
+      ),
     );
   }
 
@@ -61,7 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
       itemBuilder: (context, index) {
         return InkWell(
           onTap: () {
-            _menuDetail(index, _menus);
+            print(_menus[index]['menu_name']);
+            print(_menus[index]['price']);
+            BlocProvider.of(context)
+                .addname
+                .add(MenuNameAdd(_menus[index]['menu_name']));
           },
           child: Container(
             width: width * 0.85,
@@ -105,8 +118,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _menuDetail(int index, List<Map<String, dynamic>> menus) {
-    print(menus[index]['menu_name']);
-    print(menus[index]['price']);
+  Widget _menuBloc(BuildContext context) {
+    final blocProvider = BlocProvider.of(context);
+    return StreamBuilder(
+      stream: blocProvider.getMenuName,
+      initialData: 'menu name',
+      builder: (context, snapshot) {
+        return Container(
+          child: Text(snapshot.data),
+        );
+      },
+    );
   }
 }
