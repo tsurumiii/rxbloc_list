@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rxbloc_list/bloc/menu.dart';
+import './List_bloc/menu.dart';
 import './bloc/bloc_provider.dart';
 import './bloc/menu_bloc.dart';
 
@@ -73,9 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {
             print(_menus[index]['menu_name']);
             print(_menus[index]['price']);
-            BlocProvider.of(context)
-                .addname
-                .add(MenuNameAdd(_menus[index]['menu_name']));
+            BlocProvider.of(context).addname.add(MenuNameAdd(
+                _menus[index]['menu_name'],
+                _menus[index]['price'],
+                _menus[index]['menu_img']));
           },
           child: Container(
             width: width * 0.85,
@@ -127,17 +128,19 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: blocProvider.getMenuName,
           initialData: 'menu name',
           builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container();
+            }
             return Container(
-              child: Text(snapshot.data),
-            );
-          },
-        ),
-        StreamBuilder(
-          stream: blocProvider.getMenuList,
-          initialData: '',
-          builder: (context, snapshot) {
-            return Container(
-              child: Text(snapshot.data.toString()),
+              child: Column(
+                children: <Widget>[
+                  Text("${snapshot.data[0]}"),
+                  Text("${snapshot.data[1]}"),
+                  Image(
+                    image: NetworkImage(snapshot.data[2]),
+                  )
+                ],
+              ),
             );
           },
         ),

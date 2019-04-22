@@ -1,11 +1,6 @@
 import 'dart:collection';
-
-class MenuDetail {
-  final String menu_name;
-  const MenuDetail(this.menu_name);
-  @override
-  String toString() => "$menu_name";
-}
+import './menus.dart';
+import './menus_bloc.dart';
 
 class Menu {
   final List<MenuDetail> _menusDetail = <MenuDetail>[];
@@ -21,8 +16,8 @@ class Menu {
   UnmodifiableListView<MenuDetail> get menus =>
       UnmodifiableListView(_menusDetail);
 
-  void add(String menu_name) {
-    _updateMenuName(menu_name);
+  void add(Menus menu) {
+    _updateMenuName(menu);
   }
 
   @override
@@ -31,13 +26,13 @@ class Menu {
     return "$_menusDetail";
   }
 
-  void _updateMenuName(String menu_name) {
+  void _updateMenuName(Menus menu) {
     for (var i = 0; i < _menusDetail.length; i++) {
       final menudetail = _menusDetail[i];
-      if (menu_name == menudetail.menu_name) {
+      if (menus == menudetail.menus) {
         return;
       }
     }
-    _menusDetail.add(MenuDetail(menu_name));
+    _menusDetail.add(MenuDetail(menu));
   }
 }

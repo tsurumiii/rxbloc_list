@@ -1,37 +1,35 @@
 import 'dart:async';
 import 'package:rxdart/subjects.dart';
-import './menu.dart';
+// import './menu.dart';
 
 class MenuNameAdd {
   final String name;
-  MenuNameAdd(this.name);
+  final int price;
+  final String image;
+  MenuNameAdd(this.name, this.price, this.image);
 }
 
 class MenuBloc {
-  final Menu _menu = Menu();
+  // final Menu _menu = Menu();
 
-  final BehaviorSubject<List<MenuDetail>> _menuDetail =
-      BehaviorSubject<List<MenuDetail>>.seeded(const []);
+  // final BehaviorSubject<List<MenuDetail>> _menuDetail =
+  //     BehaviorSubject<List<MenuDetail>>.seeded(const []);
 
   final StreamController<MenuNameAdd> _menuNameAddController =
       StreamController<MenuNameAdd>();
 
-  final BehaviorSubject<String> _addMenuName =
-      BehaviorSubject<String>.seeded('');
+  final BehaviorSubject<List> _addMenuName = BehaviorSubject<List>.seeded([]);
 
   MenuBloc() {
-    _menuNameAddController.stream.listen((name) {
-      print(name.name);
-      _menu.add(name.name);
-      _menuDetail.add(_menu.menus);
-      print('menu: $_menu.');
-      _addMenuName.add(name.name);
+    _menuNameAddController.stream.listen((menu) {
+      print(menu.price);
+      _addMenuName.add([menu.name, menu.price, menu.image]);
     });
   }
 
   Sink<MenuNameAdd> get addname => _menuNameAddController.sink;
 
-  Stream<String> get getMenuName => _addMenuName.stream;
+  Stream<List> get getMenuName => _addMenuName.stream;
 
-  Stream<List<MenuDetail>> get getMenuList => _menuDetail.stream;
+  // Stream<List<MenuDetail>> get getMenuList => _menuDetail.stream;
 }
