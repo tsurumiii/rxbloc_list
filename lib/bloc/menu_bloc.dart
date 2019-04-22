@@ -18,11 +18,15 @@ class MenuBloc {
   final StreamController<MenuNameAdd> _menuNameAddController =
       StreamController<MenuNameAdd>();
 
+  final BehaviorSubject<List<MenuNameAdd>> _menuDetail =
+      BehaviorSubject<List<MenuNameAdd>>.seeded(const []);
+
   final BehaviorSubject<List> _addMenuName = BehaviorSubject<List>.seeded([]);
 
   MenuBloc() {
     _menuNameAddController.stream.listen((menu) {
       print(menu.price);
+      _menuDetail.add([menu]);
       _addMenuName.add([menu.name, menu.price, menu.image]);
     });
   }
@@ -30,6 +34,8 @@ class MenuBloc {
   Sink<MenuNameAdd> get addname => _menuNameAddController.sink;
 
   Stream<List> get getMenuName => _addMenuName.stream;
+
+  Stream<List<MenuNameAdd>> get menuList => _menuDetail.stream;
 
   // Stream<List<MenuDetail>> get getMenuList => _menuDetail.stream;
 }

@@ -144,6 +144,26 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           },
         ),
+        StreamBuilder(
+          stream: blocProvider.menuList,
+          initialData: 'menu name',
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container();
+            }
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  Text("${snapshot.data[0].name}"),
+                  Text("${snapshot.data[0].price}"),
+                  Image(
+                    image: NetworkImage(snapshot.data[0].image),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
       ],
     );
   }
