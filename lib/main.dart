@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rxbloc_list/bottomMenu.dart';
+import 'package:rxbloc_list/detail.dart';
 import './List_bloc/menu.dart';
 import './bloc/bloc_provider.dart';
 import './bloc/menu_bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,12 +35,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('rx Bloc List'),
-      ),
-      body: ListView(
-        children: <Widget>[
-          _menuList(context),
-          _menuBloc(context),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.details),
+            onPressed: () {
+              Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (BuildContext context) => MenuDetail()));
+            },
+          ),
         ],
+      ),
+      body: SlidingUpPanel(
+        maxHeight: 500,
+        minHeight: 100,
+        panel: BottomMenu(),
+        body: ListView(
+          children: <Widget>[
+            _menuList(context),
+            _menuBloc(context),
+          ],
+        ),
       ),
     );
   }
@@ -77,6 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 _menus[index]['menu_name'],
                 _menus[index]['price'],
                 _menus[index]['menu_img']));
+            Navigator.of(context).push(CupertinoPageRoute(
+                builder: (BuildContext context) => MenuDetail()));
           },
           child: Container(
             width: width * 0.85,
