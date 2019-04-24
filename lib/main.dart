@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:rxbloc_list/bottomMenu.dart';
-import 'package:rxbloc_list/detail.dart';
+import './cartList.dart';
+import './cart/cart_bloc.dart';
+import './bottomMenu.dart';
+import './cart/cart_provider.dart';
+import './detail.dart';
 import './List_bloc/menu.dart';
 import './bloc/bloc_provider.dart';
 import './bloc/menu_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import './model/menu_item.dart';
+import './widget/cart_button.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,11 +19,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      child: MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+      child: CartProvider(
+        cartBloc: CartBloc(),
+        child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: MyHomePage(),
         ),
-        home: MyHomePage(),
       ),
     );
   }
@@ -32,17 +40,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final cartBloc = CartProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('rx Bloc List'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.details),
-            onPressed: () {
-              Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (BuildContext context) => MenuDetail()));
+          StreamBuilder<int>(
+            stream: cartBloc.itemCount,
+            initialData: cartBloc.itemCount.value,
+            builder: (context, snapshot) {
+              return CartButton(
+                itemCount: snapshot.data,
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => CartList()));
+                },
+              );
             },
-          ),
+          )
         ],
       ),
       body: SlidingUpPanel(
@@ -91,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {
             print(_menus[index]['menu_name']);
             print(_menus[index]['price']);
-            BlocProvider.of(context).addname.add(MenuNameAdd(
+            BlocProvider.of(context).addname.add(MenuItem(
                 _menus[index]['menu_name'],
                 _menus[index]['price'],
                 _menus[index]['menu_img']));
@@ -148,7 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: blocProvider.getMenuName,
           initialData: 'menu name',
           builder: (context, snapshot) {
-            if (snapshot.data == null) {
+            // print('snapshot.data : ${snapshot.data}');
+            if (snapshot.data == []) {
               return Container();
             }
             return Container(
